@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", function (req, res) {
-  res.render("home", { home: homeStartingContent , posts : posts });
+  res.render("home", { home: homeStartingContent , posts : posts});
 });
 
 
@@ -50,11 +50,12 @@ app.post("/compose", function (req, res) {
 
 app.get("/posts/:topic",function(req,res){
   var Topic = _.lowerCase(req.params.topic);
-  
+
   posts.forEach(function(post){
     if (Topic === _.lowerCase(post.title)){
-      console.log("matched");
+        res.render("post",{newTitle : post.title , newContent : post.content});
     }
+    
   });
   
 });
