@@ -1,9 +1,23 @@
 //jshint esversion:6
 
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
+const mongoose = require("mongoose");
+
+// connecting to database
+mongoose.connect("mongodb://localhost:27017/blogDB");
+
+// creating schema
+const blogSchema = {
+  title: String,
+  input : String
+};
+
+// creating model
+const Blog = mongoose.model("blog", blogSchema);
 
 const posts = [];
 
@@ -21,6 +35,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+
+// route 
 app.get("/", function (req, res) {
   res.render("home", { home: homeStartingContent , posts : posts});
 });
@@ -40,11 +56,19 @@ app.get("/compose",function(req,res){
 });
 
 app.post("/compose", function (req, res) {
-  const post = {
-    title : req.body.title,
-    content : req.body.content
-  };
-  posts.push(post);
+  // const post = {
+  //   title : req.body.title,
+  //   content : req.body.content
+  // };
+  // posts.push(post);
+
+  // creating document
+const compose = new Blog({
+  title: req.body.title,
+  input: req.body.content
+});
+
+compose.save();
   res.redirect("/");
 });
 
@@ -60,8 +84,7 @@ app.get("/posts/:topic",function(req,res){
   
 });
 
-
-
+// host
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
