@@ -13,7 +13,7 @@ mongoose.connect("mongodb://localhost:27017/blogDB");
 // creating schema
 const blogSchema = {
   title: String,
-  input : String
+  content : String
 };
 
 // creating model
@@ -38,7 +38,17 @@ app.use(express.static("public"));
 
 // route 
 app.get("/", function (req, res) {
-  res.render("home", { home: homeStartingContent , posts : posts});
+
+  // reading database
+  Blog.find()
+  .then(function(data){
+    console.log(data);
+    res.render("home", { home: homeStartingContent, posts:data});
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+
 });
 
 
@@ -63,12 +73,13 @@ app.post("/compose", function (req, res) {
   // posts.push(post);
 
   // creating document
-const compose = new Blog({
+const post = new Blog({
   title: req.body.title,
-  input: req.body.content
+  content: req.body.content
 });
+//saving into database
+post.save();
 
-compose.save();
   res.redirect("/");
 });
 
