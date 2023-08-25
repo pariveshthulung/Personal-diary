@@ -78,9 +78,11 @@ const post = new Blog({
   content: req.body.content
 });
 //saving into database
-post.save();
-
+post.save()
+.then(function(){
   res.redirect("/");
+});
+
 });
 
 app.get("/posts/:topic",function(req,res){
