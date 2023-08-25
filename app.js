@@ -80,6 +80,7 @@ const post = new Blog({
 //saving into database
 post.save()
 .then(function(){
+  
   res.redirect("/");
 });
 
@@ -88,12 +89,16 @@ post.save()
 app.get("/posts/:topic",function(req,res){
   var Topic = _.lowerCase(req.params.topic);
 
-  posts.forEach(function(post){
-    if (Topic === _.lowerCase(post.title)){
-        res.render("post",{newTitle : post.title , newContent : post.content});
-    }
-    
-  });
+  Blog.find()
+  .then(function(posts){
+    posts.forEach(function(post){
+      if (Topic === _.lowerCase(post.title)){
+          res.render("post",{newTitle : post.title , newContent : post.content});
+      }
+      
+    });
+
+  })
   
 });
 
